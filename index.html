@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تحليل وتصميم نظم المعلومات - تفاعلي</title>
+    <!-- استيراد مكتبة Tailwind CSS للتنسيق الفاخر -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- استيراد خط القاهرة لتصميم أكاديمي مميز -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- استيراد مكتبة PptxGenJS لإنشاء وتحميل ملف الباوربوينت مباشرة من المتصفح -->
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        /* تأثيرات حركية سلسة مخصصة */
+        .transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* تصميم شريط التمرير */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.3);
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- شريط الرأس المميز للمنصة -->
+    <header class="bg-slate-950 border-b border-slate-800 shadow-xl py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-500 text-slate-950 p-2.5 rounded-xl font-bold text-xl shadow-lg shadow-amber-500/20">
+                    SAD
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        تحليل وتصميم نظم المعلومات
+                        <span class="text-xs bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20">منصة تفاعلية ذكية</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">إعداد وتطوير: <strong class="text-amber-400">قيس جازي</strong> | إشراف الدكتور فالح الحوري</p>
+                </div>
+            </div>
+            
+            <button onclick="downloadPPTX()" class="transition-all flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold px-5 py-2.5 rounded-lg shadow-lg hover:shadow-amber-500/20 hover:-translate-y-0.5 active:translate-y-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                <span>تصدير العرض الفعلي كـ PPTX</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- واجهة العمل الرئيسية للمنصة التفاعلية -->
+    <main class="flex-grow max-w-7xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- القائمة الجانبية: قائمة الشرائح للتنقل الفوري -->
+        <aside class="lg:col-span-1 bg-slate-950/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col h-[calc(100vh-140px)] min-h-[450px]">
+            <h2 class="text-sm font-bold text-slate-400 mb-3 flex items-center justify-between border-b border-slate-800 pb-2">
+                <span>فهرس الشرائح الأكاديمية</span>
+                <span class="bg-slate-800 text-slate-300 text-xs px-2 py-0.5 rounded-full" id="slide-counter-badge">21 شريحة</span>
+            </h2>
+            <div class="flex-grow overflow-y-auto space-y-1 pr-1 custom-scrollbar" id="slides-menu-list">
+                <!-- سيتم توليد العناصر برمجياً هنا -->
+            </div>
+        </aside>
+
+        <!-- منطقة العرض المركزية (الشريحة الحالية + الملاحظات) -->
+        <section class="lg:col-span-3 flex flex-col gap-6">
+            
+            <!-- لوحة العرض بنسبة الباوربوينت القياسية 16:9 -->
+            <div class="relative bg-slate-950 rounded-2xl border border-slate-800 shadow-2xl overflow-hidden">
+                <!-- الشريحة الأكاديمية المنسقة -->
+                <div class="aspect-video w-full flex flex-col justify-between p-6 md:p-8 text-slate-900 bg-white relative transition-all" id="slide-canvas">
+                    <!-- الشريط العلوي الأكاديمي المميز -->
+                    <div class="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-blue-900 via-indigo-800 to-amber-500"></div>
+                    
+                    <!-- ترويسة الشريحة -->
+                    <div class="flex justify-between items-center border-b border-slate-150 pb-3">
+                        <h3 class="text-lg md:text-xl lg:text-2xl font-extrabold text-blue-900" id="slide-title">...</h3>
+                        <div class="text-[10px] md:text-xs font-semibold text-amber-600 border border-amber-500/20 bg-amber-50 px-2 py-0.5 rounded" id="slide-chapter-tag">
+                            تحليل وتصميم النظم
+                        </div>
+                    </div>
+
+                    <!-- محتوى الشريحة المنسق والمرتب على شكل نقط أو تخطيط خاص أو نماذج رسومية -->
+                    <div class="flex-grow flex flex-col justify-center my-3 overflow-hidden" id="slide-body">
+                        <!-- سيتم توليد محتوى الشريحة هنا برمجياً لمنع تداخل النصوص -->
+                    </div>
+
+                    <!-- تذييل الشريحة الأكاديمية -->
+                    <div class="flex justify-between items-center text-[10px] md:text-xs text-slate-400 border-t border-slate-100 pt-2">
+                        <span>إعداد الطالب: قيس جازي</span>
+                        <span class="font-bold text-blue-950" id="slide-number-display">الشريحة 1 من 21</span>
+                        <span>مساق تحليل وتصميم نظم المعلومات</span>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم في التصفح المدمجة داخل الشريحة -->
+                <div class="absolute inset-y-0 right-0 left-0 flex justify-between items-center px-4 pointer-events-none">
+                    <button onclick="prevSlide()" class="pointer-events-auto transition-all p-2 rounded-full bg-slate-950/80 hover:bg-slate-900 border border-slate-700/50 text-slate-300 hover:text-white shadow-xl hover:scale-110 active:scale-95" title="الشريحة السابقة">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <button onclick="nextSlide()" class="pointer-events-auto transition-all p-2 rounded-full bg-slate-950/80 hover:bg-slate-900 border border-slate-700/50 text-slate-300 hover:text-white shadow-xl hover:scale-110 active:scale-95" title="الشريحة التالية">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- لوحة ملاحظات المتحدث (تحت الشريحة مباشرة ومصممة للقراءة المريحة) -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="flex items-center gap-2 border-b border-slate-850 pb-2 mb-3">
+                    <div class="w-2.5 h-5 bg-amber-500 rounded-full"></div>
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        ملاحظات الشرح والتقديم للمحاضر (Speaker Notes)
+                        <span class="text-xs font-normal text-slate-400">(هذا ما ستقوم بإلقائه وشرحه شفهياً أمام زملائك واللجنة)</span>
+                    </h4>
+                </div>
+                <!-- المحتوى النصي لملاحظات المتحدث مع دعم المحاذاة والمسافات المريحة -->
+                <p class="text-slate-300 text-xs md:text-sm leading-relaxed whitespace-pre-line text-right" id="slide-notes-box">
+                    تحميل الملاحظات...
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- تذييل المنصة والمؤشرات التقنية -->
+    <footer class="bg-slate-950 border-t border-slate-850 py-3 px-6 text-center text-xs text-slate-500">
+        منصة قيس جازي الذكية - تم التحديث في 2026. تدعم استخدام لوحة المفاتيح للتنقل (الأزرار اليمين واليسار).
+    </footer>
+
+    <!-- السيناريو والمصفوفات البرمجية لتشغيل العرض وتصدير الملفات -->
+    <script>
+        // مصفوفة البيانات الضخمة التي تحتوي على الشرائح الـ 21 بالتفصيل الأكاديمي والنماذج المرئية
+        const slidesData = [
+            {
+                title: "تحليل وتصميم نظم المعلومات",
+                isTitleSlide: true,
+                bullets: [
+                    "مساق أكاديمي شامل يغطي المبادئ الأساسية والعملية لتصميم النظم",
+                    "تحت إشراف الدكتور فالح الحوري",
+                    "إعداد المادة والعرض: قيس جازي"
+                ],
+                notes: "مرحباً بكم طلابنا الأعزاء في مساق تحليل وتصميم نظم المعلومات. في هذا المساق سنتعرف على المبادئ الأساسية لبناء النظم وتطويرها، بدءاً من فهم المشكلة والاحتياجات وحتى تصميم الحل النهائي وإطلاقه. هذا العرض التقديمي من إعداد وتجهيز قيس جازي."
+            },
+            {
+                title: "موضوعات المساق الأساسية",
+                bullets: [
+                    "مدخل إلى تحليل وتصميم نظم المعلومات: المفهوم والأهمية.",
+                    "الفرق الأساسي بين تحليل النظم وتصميم النظم.",
+                    "دور محلل النظم وأهم مهاراته المهنية.",
+                    "دورة حياة تطوير النظم (SDLC).",
+                    "خطوات التحليل والتصميم العملي للمشروع.",
+                    "الصيانة المستمرة وتقييم الأداء العام للنظام."
+                ],
+                notes: "في هذا المساق، سنغطي مجموعة من المواضيع الحيوية التي تشكل العمود الفقري لهندسة البرمجيات وإدارة النظم. سنبدأ بالمفاهيم الأساسية والأهمية، ثم ننتقل لفهم الفرق بين التحليل والتصميم. سنتعرف على دور محلل النظم، وندرس دورة حياة تطوير النظم خطوة بخطوة."
+            },
+            {
+                title: "مفهوم تحليل نظم المعلومات (Systems Analysis)",
+                bullets: [
+                    "التعريف العام: عملية منهجية تهدف إلى دراسة نظام قائم أو مقترح لفهم مشكلاته واحتياجاته، ثم وضع تصور تفصيلي لنظام جديد يلبي المتطلبات بكفاءة.",
+                    "الركائز الأساسية لمرحلة التحليل:",
+                    "1. فهم المشكلة الحالية وتحديد المتطلبات بدقة.",
+                    "2. دراسة الوضع الحالي وتحديد نقاط القوة والضعف (Gap Analysis).",
+                    "3. تحديد احتياجات المستخدمين (وظيفية وغير وظيفية).",
+                    "4. تحليل تدفق العمليات والبيانات وتقييم الجدوى الاقتصادية والتقنية والتشغيلية."
+                ],
+                notes: "تحليل النظم هو مرحلة فهم المشكلة وتحديد المتطلبات. نحن هنا كالمحلل أو الطبيب الذي يشخص المرض؛ لا يمكننا وصف العلاج قبل فهم الأعراض بدقة. نقوم بدراسة النظام الحالي، ونستمع للمستخدمين لتحديد ما يحتاجونه فعلاً، ونتأكد من أن بناء النظام مجدٍ اقتصادياً وفنياً للمؤسسة."
+            },
+            {
+                title: "مفهوم تصميم نظم المعلومات (Systems Design)",
+                bullets: [
+                    "التعريف العام: مرحلة تحويل المتطلبات والتحليلات التي تم جمعها إلى مخطط عملي وهيكلي لبناء النظام الجديد.",
+                    "الركائز الأساسية لمرحلة التصميم:",
+                    "1. تصميم قاعدة البيانات (Database Design) والجداول والعلاقات.",
+                    "2. تصميم واجهات المستخدم (User Interfaces) لضمان سهولة الاستخدام.",
+                    "3. تصميم شاشات المدخلات والمخرجات والتقارير المطبوعة.",
+                    "4. وضع الإجراءات الأمنية والضوابط والصلاحيات لحماية البيانات.",
+                    "5. إعداد المواصفات الفنية النهائية لتسليمها للمبرمجين لبدء البناء."
+                ],
+                notes: "بعد أن ننتهي من فهم المشكلة (التحليل)، ننتقل إلى مرحلة التصميم. هنا نلعب دور المهندس المعماري الذي يضع المخططات التنفيذية بناءً على المتطلبات. نحدد شكل الواجهات، وكيف ستترابط البيانات في قاعدة البيانات، وما هي الصلاحيات الأمنية المطلوبة لحماية النظام من أي اختراق أو تسريب."
+            },
+            {
+                title: "أهمية تحليل وتصميم النظم للمؤسسات",
+                bullets: [
+                    "تقليل احتمالية فشل المشاريع التقنية والبرمجية المكلفة.",
+                    "ضمان توافق النظام الجديد مع الرؤية والأهداف الاستراتيجية للمؤسسة.",
+                    "تحسين كفاءة العمليات وسرعة إنجاز المعاملات اليومية.",
+                    "تقليل التكاليف التشغيلية وتفادي أخطاء البناء العشوائي.",
+                    "تعزيز أمن واستقرار المعلومات والبيانات الحساسة."
+                ],
+                notes: "لماذا نهتم بالتحليل والتصميم قبل كتابة الكود؟ لأن التخطيط يوفر ملايين الدولارات. أغلب المشاريع البرمجية تفشل بسبب سوء فهم المتطلبات في البداية. التحليل والتصميم يضمنان أن النظام سيبنى بشكل صحيح من المرة الأولى، وسيكون متوافقاً مع أهداف العمل، ويؤمن حماية كافية لبيانات المؤسسة."
+            },
+            {
+                title: "مكونات النظام الأساسية (System Components)",
+                diagram: "components",
+                bullets: [
+                    "المدخلات (Inputs): البيانات والموارد الأولية التي يتم تغذية النظام بها.",
+                    "العمليات (Processes): عمليات المعالجة والتحويل الحسابية والمنطقية للبيانات.",
+                    "المخرجات (Outputs): المعلومات المفيدة والتقارير النهائية الناتجة عن المعالجة.",
+                    "التغذية الراجعة (Feedback): تقييم المخرجات ومقارنتها بالمتطلبات لتعديل المدخلات أو العمليات لضمان الجودة."
+                ],
+                notes: "أي نظام في الكون يتكون من أربعة عناصر رئيسية. خذوا على سبيل المثال نظام التسجيل في الجامعة: المدخلات هي بيانات الطالب والمواد، العمليات هي التحقق من الشعب المتاحة وحساب الرسوم، المخرجات هي الجدول الدراسي النهائي، والتغذية الراجعة هي تقييم الطالب للنظام لتطويره مستقبلاً وتفادي أي بطء أو مشاكل."
+            },
+            {
+                title: "منهجية تحليل وتصميم النظم",
+                diagram: "improvement",
+                bullets: [
+                    "منهجية التحسين الدائري: دراسة متطلبات العميل -> تصميم وتنفيذ العمليات -> قياس المخرجات -> التطوير والتحسين المستمر للخدمة.",
+                    "عملية تفاعلية مستمرة تعتمد على التقييم المباشر والقياس الدوري للثغرات البرمجية والتشغيلية.",
+                    "تهدف إلى مواكبة الاحتياجات وتطوير الأداء العام للمنظمة."
+                ],
+                notes: "منهجية النظام الناجح تعتمد على دورة تحسين مغلقة. نبدأ بدراسة متطلبات العميل، نمررها كمدخلات للعمليات لنحصل على المخرجات، ومن ثم نقيس ونحلل ونحسّن بشكل دوري مستمر لكي لا يتوقف النظام عن التطور."
+            },
+            {
+                title: "كيف يتحقق التميز في النظام (Attaining Excellence)",
+                diagram: "excellence",
+                bullets: [
+                    "عوامل تحقيق التميز (Excellence) في النظام:",
+                    "1. توفير كادر بشري كفؤ ومحفز للعمل وخدمات نوعية مواكبة.",
+                    "2. تطبيق الصحاح الستة للتميز: عمل الشيء الصحيح، بطريقة صحيحة، في الوقت الصحيح، في المكان الصحيح، مع الناس الأصحاح، لابتغاء الهدف الصحيح."
+                ],
+                notes: "التميز لا يأتي صدفة، بل هو نتاج تطبيق 'الصحاح الستة'. يجب أن يركز محلل النظم على تقديم القيمة الصحيحة بالطريقة والوقت والمكان المناسبين، وبواسطة كادر مدرب ومؤهل، لتحقيق الهدف الاستراتيجي للمؤسسة وضمان بقائها في دائرة المنافسة."
+            },
+            {
+                title: "تحليل وتفكيك العمليات (Process Analysis)",
+                diagram: "process",
+                bullets: [
+                    "العملية (Process): مجموعة من الأنشطة والخطوات المترابطة التي تحول المدخلات إلى مخرجات ذات قيمة.",
+                    "النشاط (Activity): العمل الفعلي المطلوب لإنجاز جزء من العملية.",
+                    "المهمة (Task): أصغر وحدة عمل غير قابلة للتجزئة (مثل ملء نموذج، مراجعة توقيع).",
+                    "تفكيك العمليات يسهل حصر الثغرات وحذف الخطوات الزائدة لتسريع العمل وتجويده."
+                ],
+                notes: "عند البدء بتحليل أي نظام، يجب تفكيكه إلى مستويات. نبدأ بالعمليات الكبرى، ثم نقسمها إلى أنشطة، ثم إلى مهام صغيرة جداً ومحددة. لكي نحدد حدود النظام (System Scope)، يجب أن نسأل باستمرار: ما الذي يقع داخل النظام؟ ومن أين نحصل على المدخلات؟ ولمن نسلم المخرجات؟"
+            },
+            {
+                title: "أسئلة تحديد مجال ونطاق العملية (Scope)",
+                bullets: [
+                    "ما هو محتوى العملية والأنشطة الرئيسية التي تقع داخل حدود العملية؟",
+                    "ما هي المدخلات الخارجية المطلوبة للعملية ومن هم موردوها الأصليون؟",
+                    "ما هي المخرجات الأساسية التي تصدر عن العملية خارج نطاق حدودها؟",
+                    "من هم العملاء الخارجيون والمستفيدون النهائيون من هذه المخرجات؟"
+                ],
+                notes: "تحديد مجال العملية يتطلب إجابات واضحة لستة أسئلة جوهرية تتعلق بالمحتوى والحدود والمدخلات ومورديها والمخرجات وعملائها. هذا يساعد في تجنب تداخل الصلاحيات ويضمن استقرار تدفق البيانات."
+            },
+            {
+                title: "مفهوم نمذجة البيانات (Data Modeling)",
+                bullets: [
+                    "التعريف: عملية إنشاء مخطط مرئي أو تمثيل هندسي يوضح كيفية تدفق وجمع البيانات وإدارتها وتخزينها داخل المنظمة.",
+                    "أهم مزايا نمذجة البيانات:",
+                    "1. تقليل الأخطاء والثغرات أثناء تطوير وتصميم قواعد البيانات.",
+                    "2. تحقيق السرعة والكفاءة عند تصميم قواعد البيانات وإنشائها.",
+                    "3. تحقيق الاتساق والتوحيد في وثائق البيانات وتصميم الأنظمة داخل المؤسسة.",
+                    "4. تسهيل التواصل اللغوي والتقني بين مهندسي البيانات والإدارة والمستخدمين."
+                ],
+                notes: "نمذجة البيانات هي اللغة المشتركة بين المبرمجين والمديرين. بدلاً من قراءة آلاف الأسطر من الأكواد، نقوم برسم مخطط مرئي يوضح الجداول وكيف ترتبط ببعضها البعض. هذا المخطط يمنع تكرار البيانات ويضمن دقتها وسهولة استرجاعها لاحقاً."
+            },
+            {
+                title: "خطوات عملية لنمذجة وعرض البيانات",
+                bullets: [
+                    "1. تحديد الهدف: معرفة ما يريد المستخدم النهائي رؤيته وفهمه بوضوح من البيانات.",
+                    "2. اختيار المظهر المناسب: تنسيق الألوان والخطوط بما يتناسب مع هوية المؤسسة وسهولة القراءة والمطالعة.",
+                    "3. التنظيم البصري: ترتيب العناصر والرسومات بشكل جذاب يسهل تتبع تدفق البيانات ومساراتها.",
+                    "4. العرض والتبويب: استخدام أدوات النمذجة الإحصائية والبرامج المساعدة (مثل Excel, SPSS, Power BI).",
+                    "5. التعليق والتفسير: تفسير الرسوم البيانية (كالمنحنيات، الأعمدة البيانية، المدرج التكراري) لدعم متخذي القرار."
+                ],
+                notes: "البيانات الخام لا قيمة لها ما لم يتم تنظيمها وعرضها بشكل يفهمه الإنسان. نمر بخطوات تبدأ بتحديد الهدف، وتصميم العرض البصري باستخدام الألوان والخطوط المريحة، ثم نستخدم أدوات مثل Power BI لعرض الرسوم البيانية المتطورة التي تسهل قراءة المشهد واتخاذ القرارات الإدارية المناسبة."
+            },
+            {
+                title: "نمذجة البيانات بيانياً (أبحاث الأمن السيبراني)",
+                diagram: "charts",
+                bullets: [
+                    "تطبيق عملي: تحليل وتصنيف الجرائم السيبرانية المرتكبة حسب نوع الجريمة والنوع الاجتماعي (صفحة 24-28).",
+                    "استخدام الأعمدة البيانية البسيطة والمتلاصقة لتوضيح الفروقات بشكل مباشر وسهل القراءة.",
+                    "أبرز الجرائم المكتشفة: الاحتيال الإلكتروني، القرصنة، سرقة البيانات، تخريب الأنظمة، ونشر الفيروسات."
+                ],
+                notes: "لن تكتمل عملية التحليل والوصول للنتائج ما لم يتبعها تبويب وعرض للنتائج والتعليق عليها. في هذا المثال من مادة الكتاب، قمنا بنمذجة بيانات الجرائم الإلكترونية وتوزيعها بيانياً حسب الجنس، لتوضيح كيف تدعم الرسوم البيانية متخذ القرار لفهم الفئات الأكثر ارتكاباً أو تأثراً بالجريمة."
+            },
+            {
+                title: "دور الذكاء الاصطناعي في التحليل والتصميم - الجزء الأول",
+                bullets: [
+                    "يساهم الذكاء الاصطناعي (AI) في تسريع وتجويد بناء الأنظمة عبر مجالات رئيسية:",
+                    "1. تحليل المتطلبات (Requirements Analysis):",
+                    "   - استخراج المتطلبات تلقائياً من وثائق العمل والمقابلات باستخدام معالجة اللغة الطبيعية (NLP).",
+                    "   - الكشف المبكر عن التناقضات أو النواقص في وثيقة المتطلبات.",
+                    "2. نمذجة النظام وتصميمه (System Modeling):",
+                    "   - إنشاء مخططات تدفق البيانات (DFD) ومخططات UML تلقائياً من النصوص والمواصفات.",
+                    "   - اقتراح التصميم الأمثل لقواعد البيانات والاتصالات بين الجداول."
+                ],
+                notes: "الذكاء الاصطناعي أصبح شريكاً حقيقياً لمحلل النظم. اليوم، يمكن لتقنيات معالجة اللغة الطبيعية قراءة مئات الصفحات من متطلبات العميل، وتلخيصها، واكتشاف التعارضات بين المتطلبات تلقائياً، بل وبناء المخططات الهيكلية الأولية للنظام دون تدخل بشري كامل."
+            },
+            {
+                title: "دور الذكاء الاصطناعي في التحليل والتصميم - الجزء الثاني",
+                bullets: [
+                    "3. دعم اتخاذ القرار في التصميم: تحليل تجارب الأنظمة السابقة والتنبؤ بالمشاكل واقتراح الحلول المثالية للهيكلية التقنية (Architecture).",
+                    "4. توليد الأكواد البرمجية (Code Generation): تحويل مخططات التصميم مباشرة إلى كود برمجى عملي واكتشاف الأخطاء البرمجية وإصلاحها تلقائياً.",
+                    "5. اختبار النظام التلقائي (Automated Testing): توليد حالات الاختبار (Test Cases) واكتشاف الثغرات الأمنية ومناطق الضغط والانهيار في النظام."
+                ],
+                notes: "يمتد دور الذكاء الاصطناعي إلى أتمتة كتابة الكود البرمجي بناءً على المخططات المرسومة. كما يلعب دوراً حاسماً في مرحلة الاختبار؛ حيث يقوم بمحاكاة آلاف المستخدمين في نفس الوقت لاختبار مدى تحمل النظام والتنبؤ بالثغرات الأمنية قبل إطلاق النظام رسميًا للمستخدمين."
+            },
+            {
+                title: "موازنة بين فوائد وتحديات الذكاء الاصطناعي",
+                bullets: [
+                    "الفوائد والمكاسب المتوقعة:",
+                    "- اختصار هائل في الوقت والجهد وتكاليف التطوير الباهظة.",
+                    "- دقة متناهية في تحليل المتطلبات وتجنب السهو البشري التقليدي.",
+                    "- رفع جودة وكفاءة المنتج البرمجي النهائي بشكل عام.",
+                    "التحديات والعقبات القائمة:",
+                    "- الاعتماد الحرج على جودة ونظافة البيانات المدخلة للتعلم.",
+                    "- التكاليف العالية لتأسيس وامتلاك خوارزميات برمجية متطورة.",
+                    "- ضرورة وجود خبرات تقنية متخصصة لإدارة هذه الأدوات بالشكل الصحيح."
+                ],
+                notes: "رغم الفوائد المذهلة للذكاء الاصطناعي في توفير الوقت والمال وتقليل الأخطاء البشرية، إلا أن هناك تحديات كبيرة. فالذكاء الاصطناعي يحتاج لبيانات تدريبية ممتازة وعالية الجودة، وإلا ستكون نتائجه مضللة. كما أن تكلفته لا تزال مرتفعة ويتطلب خبراء على مستوى عالٍ للتعامل معه وتوجيهه بشكل صحيح."
+            },
+            {
+                title: "مفاهيم إدارة مشاريع النظم",
+                bullets: [
+                    "تعريف المشروع: مجموعة من الأعمال المترابطة غير الروتينية، تُنفذ بطريقة منظمة، ولها نقطة بداية ونهاية زمنية محددتان بوضوح لتلبية حاجة استراتيجية للمؤسسة.",
+                    "عناصر المشروع الستة الأساسية:",
+                    "1. أنشطة مترابطة ومصممة لغرض معين (غير روتينية).",
+                    "2. إطار زمني محدد (تاريخ بداية وتاريخ نهاية واضحين).",
+                    "3. موازنة تقديرية مخصصة ومحددة مسبقاً لمصاريف العمل.",
+                    "4. هدف واضح ومحدد (نظام معلومات، خدمة، أو منتج فريد).",
+                    "5. معايير قياس الجودة والكلفة والوقت لضمان تحقيق غايات النجاح."
+                ],
+                notes: "بناء أي نظام معلومات ناجح يجب أن يُدار كـ 'مشروع'. المشروع يتميز عن العمليات التشغيلية اليومية الروتينية بأنه مؤقت، فله بداية ونهاية محددتان، وله ميزانية خاصة وهدف فريد نسعى لتحقيقه وفق معايير جودة متفق عليها مع العميل."
+            },
+            {
+                title: "المحددات الثلاثية للمشروع (Triple Constraints)",
+                diagram: "constraints",
+                bullets: [
+                    "يُحكم أي مشروع بثلاثة قيود مترابطة تؤثر مباشرة على الجودة النهائية للجزء البرمجي:",
+                    "1. الوقت (Time): الجدول الزمني ومواعيد التسليم المحددة للمهام.",
+                    "2. التكاليف (Costs): الميزانية المالية والموارد المتاحة للبناء.",
+                    "3. نطاق العمل (Scope): المهام والمواصفات والمتطلبات المتفق على تنفيذها بالكامل.",
+                    "أسباب فشل المشاريع التقنية: تجاوز الميزانية المالية المحددة (Cost Overrun)، التأخر في تسليم المشروع عن وقته المحدد (Delay)، ضعف الجودة الناتجة عن سوء إدارة النطاق أو نقصه."
+                ],
+                notes: "المحددات الثلاثية أو ما يُعرف بـ 'المثلث الذهبي لإدارة المشاريع' هي: الوقت، التكلفة، والنطاق. هذه القيود مترابطة بشكل وثيق؛ فإذا طلب العميل زيادة مواصفات النظام (النطاق)، فسيؤدي ذلك حتماً لزيادة الوقت المطلوب وتكلفة التطوير. وإذا لم نتحكم في هذا المثلث بدقة، سيفشل المشروع."
+            },
+            {
+                title: "دورة حياة المشروع (Project Life Cycle)",
+                diagram: "lifecycle",
+                bullets: [
+                    "يمر مشروع نظم المعلومات بخمس مراحل زمنية متتالية ومتطورة:",
+                    "1. مرحلة إدراك فكرة المشروع: التفكير في الحاجة ودراسة الجدوى المبدئية (الفنية والمالية).",
+                    "2. مرحلة تحديد المشروع: وضع الخطط التفصيلية والجدولة والموازنة وتحديد الموارد والمسؤوليات.",
+                    "3. مرحلة تنفيذ المشروع: العمل الفعلي وبناء النظام وتوثيق الجودة والمتابعة السريعة والمستمرة للأنشطة.",
+                    "4. مرحلة تشغيل المشروع: تسليم النظام للمستخدمين وقياس الأثر والتحسين المستمر على أرض الواقع.",
+                    "5. مرحلة نهاية المشروع: إغلاق المشروع رسمياً وتصفية كافة الموارد وتوثيق الدروس والخبرات المكتسبة."
+                ],
+                notes: "لكل مشروع دورة حياة واضحة تبدأ من الفكرة والجدوى، ثم ننتقل للتخطيط والجدولة الزمنية وتوزيع المهام، تليها مرحلة البناء والبرمجة والرقابة، ثم إطلاق النظام للمستخدمين وقياس مدى نجاحه، وننتهي بالإغلاق الرسمي ونقل الموارد لمشاريع أخرى وتوثيق الخبرات المكتسبة."
+            },
+            {
+                title: "المرحلة الأولى: إدراك الفكرة ونموذج شجرة المشاكل",
+                diagram: "tree",
+                bullets: [
+                    "تركز على دراسة الحاجة الحقيقية للنظام وعمل دراسة جدوى مبدئية (فنية ومالية).",
+                    "أسلوب تحليل المشاكل (Problem Analysis): دراسة الوضع الحالي وتحديد المشكلة المركزية الأساسية بدقة.",
+                    "نموذج (شجرة المشاكل) يفكك المشكلة إلى ثلاثة أجزاء رئيسية:",
+                    "  * القمة والفروع: تمثل (الآثار والنتائج السلبية) المترتبة على المشكلة العامة.",
+                    "  * الجذع: يمثل (المشكلة المركزية الحالية) المطلوب معالجتها.",
+                    "  * الجذور: تمثل (الأسباب الحقيقية والعميقة للمشكلة) التي تسببت في الخلل."
+                ],
+                notes: "المرحلة الأولى تبدأ بالبحث عن الجدوى من النظام. ولتحديد المشكلة نستخدم أداة 'شجرة المشاكل'. الجذور تمثل الأسباب الأساسية الخفية (مثل غياب الصيانة)، والجذع هو المشكلة الظاهرة (مثل حوادث الحافلات المتكررة)، بينما الفروع والأوراق هي الآثار السلبية (مثل تأخر الركاب وفقدان الثقة بالشركة)."
+            },
+            {
+                title: "إدارة وتصنيف أصحاب المصلحة (Stakeholders Map)",
+                diagram: "stakeholders",
+                bullets: [
+                    "صياغة الأهداف: تحويل الصياغات السلبية في شجرة المشاكل إلى صياغات إيجابية مرغوبة ومخطط لها.",
+                    "تحديد أصحاب المصلحة (Stakeholders): حصر كافة الجهات التي تؤثر أو تتأثر بالمشروع لضمان قبول النظام والتقليل من مقاومة التغيير.",
+                    "أبرز فئات أصحاب المصلحة: الإدارة العليا، موظفو النظام، العملاء والمستخدمون، الموردون، الجهات الرقابية، المجتمع والبيئة المحيطة."
+                ],
+                notes: "بعد تحديد المشاكل، نقوم بقلبها إيجابياً لتصبح هي أهداف المشروع الجديد. كما نركز في هذه المرحلة على إشراك أصحاب المصلحة (Stakeholders)؛ فهم المفتاح لنجاح أو فشل النظام. يجب أن نفهم متطلبات ومخاوف كل طرف لضمان تفاعلهم الإيجابي مع النظام عند إطلاقه."
+            },
+            {
+                title: "جدولة أنشطة المشروع (Microsoft Project / Gantt)",
+                diagram: "gantt",
+                bullets: [
+                    "أداة غانت (Gantt Chart) هي التقنية الأفضل لتمثيل جدول أنشطة المشروع زمنياً (صفحة 72).",
+                    "توضح الأنشطة من النشاط A (البناء الفني للقطع الداخلية) حتى النشاط H (الفحص والتشغيل التجريبي).",
+                    "تساعد في كشف التداخل والمسار الحرج وتحديد الأنشطة المتأخرة عن الجدول المخطط له."
+                ],
+                notes: "في الختام، للتحكم بالوقت والموارد نستخدم مخطط Gantt لتتبع المهام من A إلى H. يوضح المخطط متى تبدأ كل مهمة ومتى تنتهي، ومن هو المسؤول، ونسبة الإنجاز الحالية، مما يضمن تسليم المشروع في موعده المحدد وتلافي أي غرامات تأخير."
+            }
+        ];
+
+        let currentSlideIndex = 0;
+
+        // دالة لبناء القائمة الجانبية
+        function initMenu() {
+            const menuList = document.getElementById('slides-menu-list');
+            menuList.innerHTML = '';
+            slidesData.forEach((slide, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `transition-all w-full text-right px-3 py-2 text-xs rounded-lg flex items-start gap-2 ${idx === currentSlideIndex ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'}`;
+                btn.onclick = () => {
+                    selectSlide(idx);
+                };
+                
+                btn.innerHTML = `
+                    <span class="opacity-60 flex-shrink-0 font-mono mt-0.5">${(idx + 1).toString().padStart(2, '0')}.</span>
+                    <span class="truncate">${slide.title}</span>
+                `;
+                menuList.appendChild(btn);
+            });
+
+            document.getElementById('slide-counter-badge').innerText = `${slidesData.length} شرائح`;
+        }
+
+        // دالة لتوليد النماذج الرسومية تفاعلياً داخل الشرائح بناءً على نوع الرسمة
+        function getDiagramHTML(type) {
+            switch(type) {
+                case 'components':
+                    return `
+                        <div class="flex flex-col items-center justify-center h-full p-4 bg-slate-50 border border-slate-100 rounded-xl shadow-inner relative overflow-hidden">
+                            <!-- تدفق المكونات -->
+                            <div class="flex items-center justify-between w-full max-w-md gap-2 relative z-10">
+                                <div class="bg-blue-100 border-2 border-blue-600 text-blue-900 px-3 py-2 rounded-lg text-center font-bold text-xs shadow-md">
+                                    <div class="text-[9px] text-blue-500 font-normal">Input</div>
+                                    المدخلات
+                                </div>
+                                <span class="text-blue-600 font-bold text-lg animate-pulse">➔</span>
+                                <div class="bg-amber-100 border-2 border-amber-500 text-amber-950 px-3 py-2 rounded-lg text-center font-bold text-xs shadow-md">
+                                    <div class="text-[9px] text-amber-600 font-normal">Processing</div>
+                                    العمليات
+                                </div>
+                                <span class="text-blue-600 font-bold text-lg animate-pulse">➔</span>
+                                <div class="bg-green-100 border-2 border-green-600 text-green-900 px-3 py-2 rounded-lg text-center font-bold text-xs shadow-md">
+                                    <div class="text-[9px] text-green-500 font-normal">Output</div>
+                                    المخرجات
+                                </div>
+                            </div>
+                            <!-- التغذية الراجعة -->
+                            <div class="mt-6 flex flex-col items-center justify-center w-full max-w-xs relative z-10">
+                                <div class="w-full border-b-2 border-dashed border-indigo-400 h-2"></div>
+                                <div class="bg-indigo-50 border border-indigo-200 text-indigo-900 text-[10px] px-3 py-1 rounded-full font-bold shadow -mt-2.5">
+                                    حلقة التغذية الراجعة (Feedback Loop)
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                case 'improvement':
+                    return `
+                        <div class="flex items-center justify-center h-full p-4 bg-slate-50 border border-slate-100 rounded-xl relative">
+                            <div class="relative w-44 h-44 flex items-center justify-center">
+                                <!-- حلقة التدوير البرمجية -->
+                                <div class="absolute inset-0 border-4 border-dashed border-indigo-400 rounded-full animate-spin" style="animation-duration: 20s"></div>
+                                <div class="absolute bg-white border border-slate-200 w-36 h-36 rounded-full shadow-lg flex flex-col items-center justify-center text-center p-3 z-10">
+                                    <div class="text-[9px] font-bold text-amber-600">Continuous Loop</div>
+                                    <div class="text-xs font-black text-blue-900">التحسين المستمر</div>
+                                    <div class="text-[8px] text-slate-400 mt-1">متطلبات العميل ➔ مخرجات ذات قيمة</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                case 'excellence':
+                    return `
+                        <div class="grid grid-cols-2 gap-2 h-full p-3 bg-slate-50 border border-slate-100 rounded-xl">
+                            <div class="bg-white border border-slate-150 p-2 rounded shadow-sm text-center flex flex-col justify-center">
+                                <div class="text-xs font-bold text-blue-900">1. الشيء الصحيح</div>
+                                <div class="text-[8px] text-slate-400">Right Thing</div>
+                            </div>
+                            <div class="bg-white border border-slate-150 p-2 rounded shadow-sm text-center flex flex-col justify-center">
+                                <div class="text-xs font-bold text-blue-900">2. طريقة صحيحة</div>
+                                <div class="text-[8px] text-slate-400">Right Way</div>
+                            </div>
+                            <div class="bg-white border border-slate-150 p-2 rounded shadow-sm text-center flex flex-col justify-center">
+                                <div class="text-xs font-bold text-blue-900">3. الوقت الصحيح</div>
+                                <div class="text-[8px] text-slate-400">Right Time</div>
+                            </div>
+                            <div class="bg-white border border-slate-150 p-2 rounded shadow-sm text-center flex flex-col justify-center">
+                                <div class="text-xs font-bold text-blue-900">4. المكان الصحيح</div>
+                                <div class="text-[8px] text-slate-400">Right Place</div>
+                            </div>
+                        </div>
+                    `;
+                case 'process':
+                    return `
+                        <div class="flex flex-col items-center justify-center h-full p-4 bg-slate-50 border border-slate-100 rounded-xl gap-2">
+                            <div class="w-full bg-blue-900 text-white text-xs py-1.5 px-3 rounded text-center font-bold shadow">
+                                العملية الكبرى (Process)
+                            </div>
+                            <span class="text-slate-400 text-xs">▼ تتكون من</span>
+                            <div class="w-11/12 bg-amber-500 text-slate-950 text-xs py-1 px-3 rounded text-center font-bold shadow">
+                                الأنشطة الفرعية (Activities)
+                            </div>
+                            <span class="text-slate-400 text-xs">▼ تتفكك إلى</span>
+                            <div class="w-10/12 bg-emerald-600 text-white text-xs py-1 px-3 rounded text-center font-bold shadow">
+                                المهام البسيطة (Tasks - أصغر وحدة)
+                            </div>
+                        </div>
+                    `;
+                case 'charts':
+                    return `
+                        <div class="flex flex-col h-full p-3 bg-slate-50 border border-slate-100 rounded-xl">
+                            <div class="text-[10px] font-bold text-slate-500 mb-2 border-b border-slate-200 pb-1 text-center">
+                                نمذجة الجرائم الإلكترونية حسب الجنس (بيانات صفحة 27)
+                            </div>
+                            <div class="flex-grow flex items-end justify-between px-2 gap-2 h-28 border-b border-slate-300">
+                                <!-- الاحتيال -->
+                                <div class="flex flex-col items-center flex-1 h-full justify-end">
+                                    <div class="flex gap-0.5 items-end justify-center w-full h-20">
+                                        <div class="bg-blue-600 w-2.5 h-full rounded-t" title="ذكور: 550"></div>
+                                        <div class="bg-red-500 w-2.5 h-4 rounded-t" title="إناث: 100"></div>
+                                    </div>
+                                    <div class="text-[9px] font-bold mt-1 scale-90">الاحتيال</div>
+                                </div>
+                                <!-- القرصنة -->
+                                <div class="flex flex-col items-center flex-1 h-full justify-end">
+                                    <div class="flex gap-0.5 items-end justify-center w-full h-20">
+                                        <div class="bg-blue-600 w-2.5 h-5/6 rounded-t" title="ذكور: 450"></div>
+                                        <div class="bg-red-500 w-2.5 h-2 rounded-t" title="إناث: 50"></div>
+                                    </div>
+                                    <div class="text-[9px] font-bold mt-1 scale-90">القرصنة</div>
+                                </div>
+                                <!-- الفيروسات -->
+                                <div class="flex flex-col items-center flex-1 h-full justify-end">
+                                    <div class="flex gap-0.5 items-end justify-center w-full h-20">
+                                        <div class="bg-blue-600 w-2.5 h-3/5 rounded-t" title="ذكور: 320"></div>
+                                        <div class="bg-red-500 w-2.5 h-1.5 rounded-t" title="إناث: 30"></div>
+                                    </div>
+                                    <div class="text-[9px] font-bold mt-1 scale-90 font-sans">الفيروسات</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center gap-4 text-[9px] font-bold mt-2">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 bg-blue-600 rounded"></span>ذكور</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 bg-red-500 rounded"></span>إناث</span>
+                            </div>
+                        </div>
+                    `;
+                case 'constraints':
+                    return `
+                        <div class="flex items-center justify-center h-full p-4 bg-slate-50 border border-slate-100 rounded-xl relative">
+                            <!-- رسمة مثلث القيود الثلاثية -->
+                            <svg class="w-36 h-36 drop-shadow-md" viewBox="0 0 100 100">
+                                <polygon points="50,15 15,80 85,80" fill="none" stroke="#1e3a8a" stroke-width="3"></polygon>
+                                <circle cx="50" cy="15" r="7" fill="#d97706"></circle>
+                                <circle cx="15" cy="80" r="7" fill="#d97706"></circle>
+                                <circle cx="85" cy="80" r="7" fill="#d97706"></circle>
+                                <circle cx="50" cy="55" r="10" fill="#10b981"></circle>
+                                <!-- نصوص -->
+                                <text x="50" y="8" font-size="7" font-weight="bold" text-anchor="middle" fill="#1e3a8a">الوقت</text>
+                                <text x="8" y="88" font-size="7" font-weight="bold" text-anchor="middle" fill="#1e3a8a">التكلفة</text>
+                                <text x="92" y="88" font-size="7" font-weight="bold" text-anchor="middle" fill="#1e3a8a">النطاق</text>
+                                <text x="50" y="57" font-size="6" font-weight="bold" text-anchor="middle" fill="white">الجودة</text>
+                            </svg>
+                        </div>
+                    `;
+                case 'lifecycle':
+                    return `
+                        <div class="grid grid-cols-3 gap-1 p-2 bg-slate-50 border border-slate-100 rounded-xl items-center text-[10px]">
+                            <div class="bg-blue-100 border border-blue-300 p-1.5 rounded text-center font-bold">1. الإدراك والجدوى</div>
+                            <div class="text-center text-slate-400">➔</div>
+                            <div class="bg-blue-100 border border-blue-300 p-1.5 rounded text-center font-bold">2. التحديد والتخطيط</div>
+                            <div class="col-span-3 text-center text-slate-400 py-0.5">▼</div>
+                            <div class="bg-amber-100 border border-amber-300 p-1.5 rounded text-center font-bold">4. التشغيل والأثر</div>
+                            <div class="text-center text-slate-400">منفصل</div>
+                            <div class="bg-blue-100 border border-blue-300 p-1.5 rounded text-center font-bold">3. التنفيذ الفعلي</div>
+                        </div>
+                    `;
+                case 'tree':
+                    return `
+                        <div class="flex flex-col items-center justify-center h-full p-2 bg-slate-50 border border-slate-100 rounded-xl">
+                            <!-- القمة -->
+                            <div class="bg-red-50 border border-red-200 text-red-950 text-[9px] py-1 px-2 rounded shadow-sm text-center w-full max-w-xs font-bold">
+                                الفروع والقمة (الآثار: تأخر المسافرين، خسائر مالية)
+                            </div>
+                            <span class="text-slate-400 text-[10px] my-0.5">▲</span>
+                            <!-- الجذع -->
+                            <div class="bg-amber-100 border border-amber-300 text-amber-950 text-xs py-1 px-4 rounded shadow text-center w-4/5 font-extrabold">
+                                الجذع (المشكلة الرئيسية: حوادث الحافلات متكررة)
+                            </div>
+                            <span class="text-slate-400 text-[10px] my-0.5">▲</span>
+                            <!-- الجذور -->
+                            <div class="bg-green-50 border border-green-200 text-green-950 text-[9px] py-1 px-2 rounded shadow-sm text-center w-full max-w-xs font-bold">
+                                الجذور (الأسباب: حافلات قديمة جداً، تدهور الصيانة)
+                            </div>
+                        </div>
+                    `;
+                case 'stakeholders':
+                    return `
+                        <div class="flex items-center justify-center h-full p-4 bg-slate-50 border border-slate-100 rounded-xl relative">
+                            <!-- مخطط أصحاب المصلحة الدائري -->
+                            <div class="relative w-40 h-40 flex items-center justify-center">
+                                <div class="bg-blue-900 text-white font-bold text-[9px] text-center w-16 h-16 rounded-full flex items-center justify-center shadow-lg z-20">
+                                    أصحاب المصلحة
+                                </div>
+                                <div class="absolute w-full h-full border border-dashed border-slate-300 rounded-full animate-spin" style="animation-duration: 35s"></div>
+                                <!-- العناصر المتطايرة -->
+                                <div class="absolute top-1 text-[8px] font-bold bg-white border border-blue-200 text-blue-900 px-2 py-0.5 rounded shadow z-10">الإدارة العليا</div>
+                                <div class="absolute bottom-1 text-[8px] font-bold bg-white border border-blue-200 text-blue-900 px-2 py-0.5 rounded shadow z-10">المستخدمون</div>
+                                <div class="absolute right-0 text-[8px] font-bold bg-white border border-blue-200 text-blue-900 px-2 py-0.5 rounded shadow z-10">العملاء</div>
+                                <div class="absolute left-0 text-[8px] font-bold bg-white border border-blue-200 text-blue-900 px-2 py-0.5 rounded shadow z-10">الشركاء</div>
+                            </div>
+                        </div>
+                    `;
+                case 'gantt':
+                    return `
+                        <div class="flex flex-col h-full p-2 bg-slate-50 border border-slate-100 rounded-xl text-[9px]">
+                            <div class="text-[10px] font-bold text-blue-900 mb-1 pb-1 border-b border-slate-200 text-center">
+                                مخطط غانت لأنشطة المشروع (جدول صفحة 72)
+                            </div>
+                            <div class="space-y-1.5 flex-grow flex flex-col justify-center">
+                                <!-- مهمة A -->
+                                <div class="flex items-center gap-1">
+                                    <span class="w-16 font-bold truncate">مهمة A (بناء)</span>
+                                    <div class="flex-grow bg-slate-200 h-2.5 rounded relative">
+                                        <div class="absolute left-0 bg-blue-600 h-full rounded w-1/4" title="2 إسبوع"></div>
+                                    </div>
+                                </div>
+                                <!-- مهمة B -->
+                                <div class="flex items-center gap-1">
+                                    <span class="w-16 font-bold truncate">مهمة B (تعديل)</span>
+                                    <div class="flex-grow bg-slate-200 h-2.5 rounded relative">
+                                        <div class="absolute left-1/4 bg-blue-600 h-full rounded w-1/3" title="3 إسبوع"></div>
+                                    </div>
+                                </div>
+                                <!-- مهمة C -->
+                                <div class="flex items-center gap-1">
+                                    <span class="w-16 font-bold truncate">مهمة C (هيكل)</span>
+                                    <div class="flex-grow bg-slate-200 h-2.5 rounded relative">
+                                        <div class="absolute left-[58%] bg-blue-600 h-full rounded w-1/5" title="2 إسبوع"></div>
+                                    </div>
+                                </div>
+                                <!-- مهمة D -->
+                                <div class="flex items-center gap-1">
+                                    <span class="w-16 font-bold truncate">مهمة D (خرسانة)</span>
+                                    <div class="flex-grow bg-slate-200 h-2.5 rounded relative">
+                                        <div class="absolute left-[78%] bg-amber-500 h-full rounded w-1/5" title="متأخرة عن الخطة"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        // دالة لاختيار وعرض شريحة معينة
+        function selectSlide(index) {
+            if (index < 0 || index >= slidesData.length) return;
+            currentSlideIndex = index;
+
+            // تحديث القائمة الجانبية مظهرها
+            initMenu();
+
+            const slide = slidesData[currentSlideIndex];
+            
+            // تحديث العنوان
+            document.getElementById('slide-title').innerText = slide.title;
+            
+            // تحديث مؤشر عدد الشرائح
+            document.getElementById('slide-number-display').innerText = `الشريحة ${currentSlideIndex + 1} من ${slidesData.length}`;
+            
+            // تحديث تصنيف الجزء
+            let chapterText = "المفاهيم والتعاريف الأساسية";
+            if (currentSlideIndex >= 10) chapterText = "الذكاء الاصطناعي وهندسة النظم";
+            if (currentSlideIndex >= 13) chapterText = "إدارة مشاريع النظم والتحليل المتقدم";
+            document.getElementById('slide-chapter-tag').innerText = chapterText;
+
+            // بناء محتوى متن الشريحة
+            const bodyContainer = document.getElementById('slide-body');
+            bodyContainer.innerHTML = '';
+
+            if (slide.isTitleSlide) {
+                // تصميم مخصص لشريحة العنوان
+                bodyContainer.className = "flex-grow flex flex-col justify-center items-center text-center my-3";
+                bodyContainer.innerHTML = `
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-black text-blue-900 tracking-wide leading-tight mb-2">
+                        ${slide.title}
+                    </h2>
+                    <div class="h-1 w-20 bg-amber-500 rounded my-3"></div>
+                    <p class="text-slate-600 text-sm md:text-base font-medium max-w-lg leading-relaxed">
+                        مساق أكاديمي شامل ومتميز في هندسة وإدارة النظم البرمجية والإدارية
+                    </p>
+                    <div class="mt-6 bg-slate-50 border border-slate-100 rounded-xl px-5 py-2.5 shadow-sm">
+                        <span class="text-[10px] text-slate-400 block mb-0.5">إعداد وتطوير الطالب:</span>
+                        <strong class="text-amber-600 font-extrabold text-sm md:text-base">قيس جازي</strong>
+                    </div>
+                `;
+            } else {
+                // شريحة عادية: نتحقق إذا كانت تحتوى على رسمة نموذج
+                if (slide.diagram) {
+                    bodyContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-4 items-center h-full my-1";
+                    
+                    // العمود الأول: النقاط المكتوبة
+                    const listDiv = document.createElement('div');
+                    listDiv.className = "space-y-2";
+                    const ul = document.createElement('ul');
+                    ul.className = "space-y-2 text-right text-slate-800 text-[11px] md:text-xs lg:text-sm list-none pr-1";
+                    
+                    slide.bullets.forEach(bullet => {
+                        const li = document.createElement('li');
+                        li.className = "flex items-start gap-2 leading-relaxed";
+                        li.innerHTML = `
+                            <span class="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0 mt-1.5 shadow shadow-amber-500/35"></span>
+                            <span class="font-semibold">${bullet}</span>
+                        `;
+                        ul.appendChild(li);
+                    });
+                    listDiv.appendChild(ul);
+                    bodyContainer.appendChild(listDiv);
+
+                    // العمود الثاني: الرسم البياني أو النموذج التفاعلي
+                    const diagramDiv = document.createElement('div');
+                    diagramDiv.className = "h-full min-h-[140px] flex flex-col justify-center";
+                    diagramDiv.innerHTML = getDiagramHTML(slide.diagram);
+                    bodyContainer.appendChild(diagramDiv);
+                } else {
+                    // شريحة نقاط عادية بدون رسمة
+                    bodyContainer.className = "flex-grow flex flex-col justify-center my-2 space-y-2";
+                    const ul = document.createElement('ul');
+                    ul.className = "space-y-2 text-right text-slate-800 text-[11px] md:text-xs lg:text-sm list-none pr-1";
+                    
+                    slide.bullets.forEach(bullet => {
+                        const li = document.createElement('li');
+                        li.className = "flex items-start gap-2 leading-relaxed";
+                        li.innerHTML = `
+                            <span class="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0 mt-1.5 shadow shadow-amber-500/35"></span>
+                            <span class="font-semibold">${bullet}</span>
+                        `;
+                        ul.appendChild(li);
+                    });
+                    bodyContainer.appendChild(ul);
+                }
+            }
+
+            // تحديث لوحة ملاحظات المتحدث
+            document.getElementById('slide-notes-box').innerText = slide.notes;
+        }
+
+        // دوال التنقل
+        function nextSlide() {
+            if (currentSlideIndex < slidesData.length - 1) {
+                selectSlide(currentSlideIndex + 1);
+            } else {
+                selectSlide(0); // العودة للشريحة الأولى بشكل دائري
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                selectSlide(currentSlideIndex - 1);
+            } else {
+                selectSlide(slidesData.length - 1); // الذهاب للشريحة الأخيرة بشكل دائري
+            }
+        }
+
+        // تشغيل التنقل عبر أزرار لوحة المفاتيح
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                prevSlide(); // لأن الاتجاه من اليمين لليسار، السهم الأيمن يعيدنا للخلف في الترتيب
+            } else if (event.key === 'ArrowLeft') {
+                nextSlide(); // السهم الأيسر ينقلنا للشريحة التالية
+            }
+        });
+
+        // دالة إنشاء وتحميل ملف الباوربوينت المدمج والمثالي (PowerPoint .pptx Export)
+        function downloadPPTX() {
+            try {
+                let pptx = new PptxGenJS();
+                pptx.layout = 'LAYOUT_16x9';
+
+                slidesData.forEach((slide, idx) => {
+                    let pptxSlide = pptx.addSlide();
+                    
+                    // تعيين خلفية أكاديمية أنيقة
+                    pptxSlide.background = { color: 'F8FAFC' };
+
+                    // رسم شريط الرأس المميز في الباوربوينت
+                    pptxSlide.addShape(pptx.shapes.RECTANGLE, {
+                        x: 0, y: 0, w: '100%', h: 0.35,
+                        fill: { color: '1E3A8A' } // كحلي ملكي
+                    });
+
+                    if (slide.isTitleSlide) {
+                        // شريحة العنوان الرئيسي
+                        pptxSlide.addText("تحليل وتصميم نظم المعلومات", {
+                            x: 0.5, y: 1.5, w: 12.3, h: 1.5,
+                            fontSize: 40,
+                            bold: true,
+                            color: '1E3A8A',
+                            fontFace: 'Arial',
+                            align: 'center',
+                            rtl: true
+                        });
+
+                        // خط التميز الذهبي
+                        pptxSlide.addShape(pptx.shapes.RECTANGLE, {
+                            x: 4.8, y: 3.2, w: 3.7, h: 0.08,
+                            fill: { color: 'D97706' } // ذهبي
+                        });
+
+                        pptxSlide.addText("مساق أكاديمي شامل ومتميز في هندسة النظم\n\nإعداد الطالب المتميز: قيس جازي\nإشراف الدكتور فالح الحوري", {
+                            x: 0.5, y: 3.8, w: 12.3, h: 2.2,
+                            fontSize: 20,
+                            color: '4B5563',
+                            fontFace: 'Arial',
+                            align: 'center',
+                            rtl: true
+                        });
+                    } else {
+                        // شريحة المحتوى العادية
+                        // عنوان الشريحة
+                        pptxSlide.addText(slide.title, {
+                            x: 0.8, y: 0.6, w: 11.7, h: 0.9,
+                            fontSize: 26,
+                            bold: true,
+                            color: '1E3A8A',
+                            fontFace: 'Arial',
+                            align: 'right',
+                            rtl: true
+                        });
+
+                        // خط الفاصل أسفل العنوان
+                        pptxSlide.addShape(pptx.shapes.RECTANGLE, {
+                            x: 0.8, y: 1.45, w: 11.7, h: 0.04,
+                            fill: { color: 'D97706' } // ذهبي
+                        });
+
+                        // تجميع النقاط بمسافات كافية
+                        const formattedText = slide.bullets.map(b => "• " + b).join('\n\n');
+
+                        // إضافة النص داخل الشريحة
+                        pptxSlide.addText(formattedText, {
+                            x: 0.8, y: 1.8, w: 11.7, h: 4.8,
+                            fontSize: 16,
+                            color: '1F2937',
+                            fontFace: 'Arial',
+                            align: 'right',
+                            rtl: true,
+                            lineSpacing: 22
+                        });
+                    }
+
+                    // تذييل الشريحة الفني
+                    pptxSlide.addText("إعداد الطالب قيس جازي | مساق تحليل وتصميم النظم", {
+                        x: 0.8, y: 7.0, w: 11.7, h: 0.3,
+                        fontSize: 10,
+                        color: '9CA3AF',
+                        fontFace: 'Arial',
+                        align: 'center',
+                        rtl: true
+                    });
+
+                    // تفعيل ملاحظات المتحدث الحقيقية (Speaker Notes) لتظهر في الباوربوينت!
+                    pptxSlide.note = slide.notes;
+                });
+
+                // تصدير وحفظ الملف فوراً
+                pptx.writeFile({ fileName: 'تحليل_وتصميم_نظم_المعلومات_إعداد_قيس_جازي.pptx' });
+            } catch (error) {
+                alert("حدث خطأ أثناء تصدير ملف PowerPoint: " + error.message);
+            }
+        }
+
+        // تشغيل المنصة فور تحميل الصفحة
+        window.onload = function() {
+            initMenu();
+            selectSlide(0);
+        };
+    </script>
+</body>
+</html>
